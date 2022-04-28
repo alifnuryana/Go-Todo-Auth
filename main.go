@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/alifnuryana/go-todo-auth/database"
+	"github.com/alifnuryana/go-todo-auth/router"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,6 +14,9 @@ func main() {
 			"message": "Hello world! 👋🏻",
 		})
 	})
+
+	router.InitRouter(app)
+	database.InitDatabase()
 
 	app.Listen(":1323")
 }

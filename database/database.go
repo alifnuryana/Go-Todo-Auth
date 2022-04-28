@@ -2,13 +2,17 @@ package database
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"time"
 
 	"github.com/alifnuryana/go-todo-auth/config"
 	"github.com/alifnuryana/go-todo-auth/helper"
+	"github.com/alifnuryana/go-todo-auth/model"
 	mysqli "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
@@ -24,8 +28,17 @@ func InitDatabase() {
 		AllowNativePasswords: true,
 	}
 
-	db, err := gorm.Open(mysql.Open(mysqlConfig.FormatDSN()), &gorm.Config{})
+	newLogger := logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+		IgnoreRecordNotFoundError: true,
+		Colorful:                  true,
+	})
+
+	db, err := gorm.Open(mysql.Open(mysqlConfig.FormatDSN()), &gorm.Config{
+		Logger: newLogger,
+	})
 	helper.FatalIfError(err)
+
+	db.AutoMigrate(&model.Todo{})
 
 	sqlDB, err := db.DB()
 	helper.FatalIfError(err)
@@ -33,4 +46,6 @@ func InitDatabase() {
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	DB = db
 }
