@@ -38,7 +38,7 @@ func InitDatabase() {
 	})
 	helper.FatalIfError(err)
 
-	db.AutoMigrate(&model.Todo{})
+	db.AutoMigrate(&model.Todo{}, &model.User{})
 
 	sqlDB, err := db.DB()
 	helper.FatalIfError(err)
