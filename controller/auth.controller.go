@@ -67,7 +67,7 @@ func Login(c *fiber.Ctx) error {
 		Username: dataUser.Username,
 		Role:     dataUser.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "Go Todo App",
+			Issuer:    config.Load("APP_NAME"),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
 		},
